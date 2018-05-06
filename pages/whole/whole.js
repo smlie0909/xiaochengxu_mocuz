@@ -13,7 +13,7 @@ Page({
         let itemId = event.currentTarget.id;
         let name = event.currentTarget.dataset.title
         wx.navigateTo({
-            url: '/pages/topicList/topicList?id=' + itemId + '&&title=' + name,
+            url: '/pages/blockList/blockList?id=' + itemId + '&&title=' + name,
         })
     },
     jumpTo: function (e) {
