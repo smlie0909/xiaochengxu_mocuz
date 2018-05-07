@@ -67,7 +67,7 @@ Page({
     requestNewslistDate: function(){
         let that = this;
         // console.log(that.data.pageIndex)
-        if (that.data.pageIndex == that.data.totalpage) { //当pageIndex小于4时加载数据 
+        if (that.data.pageIndex == that.data.totalpage) { //当pageIndex小于page页数时加载数据  
             that.setData({
                 hasMore: false, //无数据时提示没有更多数据
             });

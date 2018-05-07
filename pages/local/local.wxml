@@ -18,13 +18,13 @@
                 <text class="gray">换一批</text>
             </view> 
         </view>
-        <navigator class="mood" wx:for="{{topicsData}}" wx:key="property">
+        <view class="mood" wx:for="{{topicsData}}" wx:key="property" catchtap='jumpTopics' id="{{item.id}}" data-title="{{item.title}}">
             <image class="hot-list" src='{{item.listimg}}'></image>
             <view class="words">
                 <text class="caption">{{item.title}}</text>
                 <text class="gray">已有<text class="blue">{{item.involcount}}</text>人参与 {{item.piccount}}张照片</text>
             </view>
-        </navigator>
+        </view>
         <view class="mood">
             <view class="title-list">
                 <image class="icon" src="/images/icon-hot.png"></image>

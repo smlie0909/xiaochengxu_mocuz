@@ -18,6 +18,8 @@ var config = {
     detailsList:"http://utf8develop.mocuz.com/mocuz/manage/index.php?/api/sharecircle/post/post_detail_share/",
     // 话题列表
     topicList:"http://demo.mocuz.com/mocuz/tests/index.php?url=http://utf8develop.mocuz.com/mocuz/manage/index.php?/api/sharecircle/topic/topic_list",
+    // 话题详情
+    topicDetails:"http://demo.mocuz.com/mocuz/tests/index.php?url=http://utf8develop.mocuz.com/mocuz/manage/index.php?/api/sharecircle/topic/get_topic_detail/",
     //热门帖子
     postHotList: "http://demo.mocuz.com/mocuz/tests/index.php?url=http://bbs.mocuz.com/mocuz/manage/index.php?/api/sharecircle/post/post_hot",
     //登录

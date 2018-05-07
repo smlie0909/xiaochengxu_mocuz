@@ -25,12 +25,19 @@ Page({
         this.requestHotlistDate()
         
     },
-    //事件处理函数
+    //帖子详情
     jumpDetails: function (event) {
-        let itemId = event.currentTarget.id
-        let itemName = event.currentTarget.dataset.text
+        let itemId = event.currentTarget.id;
         wx.navigateTo({
             url: '/pages/details/details?id=' + itemId
+        })
+    },
+    //话题详情
+    jumpTopics: function (event){
+        let itemId = event.currentTarget.id;
+        let itemName = event.currentTarget.dataset.title;
+        wx.navigateTo({
+            url: '/pages/topicList/topicList?id=' + itemId + '&title=' + itemName
         })
     },
     //首次加载的热门话题列表
@@ -46,6 +53,7 @@ Page({
                 'content-type': 'application/json'
             },
             success: function (res) {
+                // console.log(res.data.topics)
                 that.setData({
                     topicsData: that.getRandomArrayElements(res.data.topics, 3),
                 })
@@ -79,8 +87,8 @@ Page({
         let that = this;
         let dir = '{"auth":"","op":"index","version":"4","page":"' + that.data.pageIndex +'"}';
         let des3en = DES3.encrypt(app.globalData.key, dir);
-        // console.log(that.data.pageIndex)
-        if (that.data.pageIndex == that.data.totalpage) { //当pageIndex小于4时加载数据 
+        // console.log(that.data.pageIndex, that.data.totalpage)
+        if (that.data.pageIndex == that.data.totalpage) { //当pageIndex小于page页数时加载数据  
             that.setData({
                 hasMore: false, //无数据时提示没有更多数据
             });
@@ -93,7 +101,7 @@ Page({
                     'content-type': 'application/json'
                 },
                 success: function (res) {
-                    console.log(res.data.posts)
+                    // console.log(res.data.posts)
                     that.setData({
                         rankingData: res.data.hot_post,
                         hotData: that.data.hotData.concat(res.data.posts),
