@@ -1,6 +1,7 @@
 <!--pages/register/register.wxml-->
+<import src="../template/template.wxml" />
 <view class="container">
-     <view class="verification">
+    <view class="verification">
         <image src="../../images/icon-yonghuming.png"></image>
         <input class="name" type="text" placeholder='请输入昵称' placeholder-style='color:#cccccc;'></input>
     </view> 
@@ -18,5 +19,5 @@
     </view>
     <button class='commitbutton' bindtap='registerNewUser'  style='background-color:#1ec3c5;' type='primary'>提交</button>
 </view>
-
+<template is="toast" data="{{txt,isShow,iconClass}}"></template>
 

@@ -12,7 +12,9 @@
         "pages/myPost/myPost",
         "pages/post/post",
         "pages/register/register",
-        "pages/login/login"
+        "pages/login/login",
+        "pages/template/template"
+
     ],
     "window": {
         "backgroundColor": "#97cbff",

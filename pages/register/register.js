@@ -1,33 +1,11 @@
 // pages/register/register.js
-const registerUrl = require('../../config').register;
-const app = getApp();
-function countdown(that) {
-    let second = that.data.second;
-    if (second == 0) {
-        that.setData({
-            getCodeButtonTitle: "获取验证码",
-            second: 60,
-            buttonState: 1,
-        });
-        return;
-    } else {
-        that.setData({
-            getCodeButtonTitle: "倒计时" + second,
-            buttonState: 0,
-        })
-    }
-    let timer = setTimeout(function () {
-        that.setData({
-            second: second - 1
-        });
-        countdown(that);
-    }, 1000)
-}
+const DES3 = require('../../utils/DES3.min').des
+const codeUrl = require('../../config').identifyingCode
+const registerUrl = require('../../config').register
+const app = getApp()
 Page({
 
-    /**
-    * 页面的初始数据
-    */
+    /* 页面的初始数据 */
     data: {
         getCodeButtonTitle: "获取验证码",
         second: 60,
@@ -35,9 +13,7 @@ Page({
         phoneNum: 0,       //手机号
         verCode: 0,//验证码
     },
-    /**
-    * 注册
-    */
+    /* 注册 */
     registerNewUser: function () {
         let that = this;
         if (that.data.verCode.length > 4 && that.data.phoneNum.length == 11 && 5 < this.data.password.length < 19 && that.validatemobile()) {
@@ -60,7 +36,9 @@ Page({
                         duration: 2000
                     })
                     setTimeout(function () {
-                        wx.navigateBack({})
+                        wx.navigateBack({
+                            url:"/pages/login/login"
+                        })
                     }, 2000);
 
                     //跳转到个人中心
@@ -80,56 +58,44 @@ Page({
             })
         }
     },
-    /**
-    * 获取验证码
-    */
+    /* 获取验证码 */
     getCode: function () {
         let that = this;
         if (that.data.buttonState == 1 && that.data.phoneNum.length == 11 && that.validatemobile()) {
-        wx.showNavigationBarLoading();
-
-            // let dict = {
-            //     phoneCode: that.data.phoneNum,
-            // }
-        // console.log(app.globalData)
+            wx.showNavigationBarLoading();
+            let dir = '{"send_key":"mocuz_app_mobile_send","action":"verifycode","auth":"","mobile":"' + that.data.phoneNum + '","access_token":""}';
+            let des3en = DES3.encrypt(app.globalData.key, dir);
             wx.request({
-                url: registerUrl,
-                auth: '',
-                regtype: "m",
-                mobile: that.data.phoneNum,
+                url: codeUrl,
+                data: des3en,
+                method: 'POST',
                 success: function (res) {
                     console.log(res.data);
-                    wx.hideNavigationBarLoading();
-                    countdown(that);
-                    that.setData({})
+                    if (res.data.errmsg == "success"){
+                        wx.hideNavigationBarLoading()
+                        app.countdown(that);
+                    }else{
+                        wx.hideNavigationBarLoading()
+                        app.toastShow(that, res.data.errmsg, "icon-yunongtongqingshurushoujihaoma");
+                    }
                 },
                 fail: function (res) {
-                    //失败后的逻辑
-                    wx.hideNavigationBarLoading();
-                    wx.showToast({
-                        title: res.data.msg,
-                    })
-                    console.log("error")
+                    wx.hideNavigationBarLoading()
+                    app.toastShow(that,res.data.errmsg, "icon-yunongtongqingshurushoujihaoma");
+                    // console.log("error")
                 },
             })
         } else {
-            if (that.data.buttonState == 0) {
-
-            } else {
-                wx.showToast({
-                    title: '请校验手机号',
-                })
-            }
-
-
+            if (that.data.buttonState != 0) {
+                wx.hideNavigationBarLoading()
+                app.toastShow(that, "请校验手机号", "icon-yunongtongqingshurushoujihaoma");
+            };
         }
     },
     phoneNumber: function (e) {
-        let that = this;
-        that.setData({
+        this.setData({
             phoneNum: e.detail.value
-        });
-        console.log(that.data.phoneNum);
+        })
     },
 
     verCode: function (e) {
@@ -142,13 +108,9 @@ Page({
         let that = this;
         let myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
         if (!myreg.test(that.data.phoneNum)) {
-            wx.showToast({
-                title: '手机号有误！',
-                icon: 'success',
-                duration: 1500
-            })
+            app.toastShow(that, "请输入正确的手机号", "icon-yunongtongqingshurushoujihaoma");
             return false;
         }
         return true;
-    }
+    },
 })

@@ -23,8 +23,10 @@ var config = {
     //热门帖子
     postHotList: "http://demo.mocuz.com/mocuz/tests/index.php?url=http://bbs.mocuz.com/mocuz/manage/index.php?/api/sharecircle/post/post_hot",
     //登录
-    login: "http://demo.mocuz.com/mocuz/tests/index.php?url=http://bbs.mocuz.com/mocuz/3.0/index.php?mod=login",
+    login: "http://demo.mocuz.com/mocuz/tests/index.php?url=http://utf8develop.mocuz.com/mocuz/3.0/index.php?mod=login",
     //注册
-    register: "http://demo.mocuz.com/mocuz/tests/index.php?url=http://bbs.mocuz.com/mocuz/3.0/index.php?mod=register",
+    register: "http://demo.mocuz.com/mocuz/tests/index.php?url=http://utf8develop.mocuz.com/mocuz/3.0/index.php?mod=register",
+    // 获取验证码
+    identifyingCode:"http://demo.mocuz.com/mocuz/tests/index.php?url=http://utf8develop.mocuz.com/mocuz/3.0/index.php?mod=verifycode"
 };
 module.exports = config

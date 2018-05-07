@@ -1,5 +1,19 @@
 <view class="container">
     <scroll-view scroll-y="true" style="height: 100vh;" bindscrolltolower="lower">
+        <view class="topic-header">
+            <image class="detailsimg" src="{{detailimg}}"></image>
+            <view class="topic-title">{{title}}</view>
+            <view class="topic-info">
+                <text>{{involcount}}人参与</text>
+                <text class="pic">{{piccount}}照片</text>
+            </view>
+        </view>
+        <view class="thumbs-up" wx:if="{{involcount!=0}}">
+            <view class="img-box">
+                <image wx:for="{{part_ava}}" wx:key="icon-list" wx:for-item="itemsimg" src='{{itemsimg}}'></image>
+            </view>
+            <text>{{involcount}}人参与</text>
+        </view>
         <block wx:if="{{topicsData!=''}}">
             <view class="user-publish" wx:for="{{topicsData}}" wx:key="post-info" wx:for-index="index" id="{{item.id}}" catchtap='jumpDetails'>
                 <image class="touxiang" src='{{item.avatar}}'></image>
@@ -17,7 +31,7 @@
                 </view>
                 <view class="comment-icon">
                     <image src='/images/icon-like-normal.png' catchtap="like"></image>
-                    <text>{{item.likecount}}</text>
+                    <text>{{item.praiselist.length}}</text>
                     <image src='/images/icon-comment.png' catchtap="comment"></image>
                     <text>{{item.replylist.length}}</text>
                 </view>
@@ -26,7 +40,7 @@
                         <view class="img-box">
                             <image wx:for="{{item.praiselist}}" wx:key="icon-list" wx:for-item="itemsIcon" src='{{domain}}/uc_server/avatar.php?uid={{itemsIcon}}&size=small'></image>
                         </view>
-                        <text>{{item.likecount}}人喜欢</text>
+                        <text>{{item.praiselist.length}}人喜欢</text>
                     </view>
                     <view class="comment" wx:if="{{!item.replylist.length==0}}">
                         <block wx:for="{{item.replylist}}" wx:for-item="itemsreply" wx:key="replylist" wx:for-index="comment">
@@ -46,7 +60,7 @@
         </block>
         <block wx:else>
             <view class="loading" >
-                <view class="loading">没有更多数据</view>
+                <view class="loading">快来参与当前话题吧~</view>
             </view>
         </block> 
     </scroll-view>
