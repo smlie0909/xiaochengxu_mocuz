@@ -2,15 +2,18 @@
 <view class="container">
     <view class="content">
         <view class="user">
-            <image src='{{domain}}/uc_server/avatar.php?uid={{detailsList.uid}}&size=small'></image>
+            <image src='{{domain}}/uc_server/avatar.php?uid={{authorid}}&size=small'></image>
             <view class="information">
-                <view class="name">{{detailsList.username}}<view class="vip-static"><template is="wxParse" data="{{wxParseData:article.nodes}}"/></view></view>
-                <text class="time">{{detailsList.ctime_format}}</text>
+                <view class="name">{{author}}
+                    <view class="vip-static" wx:if="{{title=='local'}}"><template is="wxParse" data="{{wxParseData:article.nodes}}"/></view>
+                    <text class="{{gender==1?'boy':(gender==2?'girl':'vip-static')}}" wx:if="{{title=='community'}}">{{authortitle}}</text>
+                </view>
+                <text class="time">{{ctime_format}}</text>
             </view>
         </view>
-        <text class="title">{{detailsList.content_title}}</text>
-        <text class="source">来自<text>{{detailsList.appname}}</text></text>
-        <text class="words">{{detailsList.content}}</text>
+        <text class="title">{{subject}}</text>
+        <text class="source" wx:if="{{detailsList.forumname!= null}}">来自<text>{{detailsList.forumname}}</text></text>
+        <text class="words">{{content}}</text>
         <image class="img" mode="widthFix" wx:for="{{detailsList.img_arr}}" wx:key="post-info" wx:for-item="itemsImg" src="{{itemsImg.path}}"></image>
         <view class="list">
             <view class="list-info">
@@ -20,32 +23,35 @@
 
     </view>
     <view class="comment-num">
-        <text>评论 {{detailsList.responsecount}}</text>
-        <text>点赞 {{detailsList.likecount}}</text>
-        <text>阅读 {{detailsList.readcount}}</text>
+        <text>评论 {{responsecount}}</text>
+        <text>点赞 {{likecount}}</text>
+        <text>阅读 {{readcount}}</text>
     </view>
-    <view class="thumbs-up">
+    <view class="thumbs-up" wx:if="{{likecount!=0}}">
         <view class="img-box">
-            <image wx:for="{{detailsList.like_users}}" wx:key="icon-list" wx:for-item="itemsIcon" src='{{domain}}/uc_server/avatar.php?uid={{itemsIcon.uid}}&size=small'></image>
+            <image wx:for="{{like_users}}" wx:key="icon-list" wx:for-item="itemsIcon" src='{{domain}}/uc_server/avatar.php?uid={{itemsIcon.uid}}&size=small'></image>
         </view>
-        <text>{{detailsList.likecount}}人喜欢</text>
+        <text>{{likecount}}人喜欢</text>
     </view>
-    <view class="user-publish" wx:for="{{detailsList.comment.comment_list}}" wx:key="post-info" wx:for-item="items" wx:for-index="index">
+    <view class="user-publish" wx:for="{{comment_list}}" wx:key="post-info" wx:for-item="items" wx:for-index="index">
         <view class="number">{{index+1}}楼</view>
         <view class="zan">
             <image class="icon-zan" src="/images/icon-zan-bottom-normal.png"></image>
             <text>{{items.likecount}}</text>
         </view>
-        <image class="touxiang" wx:for="{{detailsList.comment.comment_list}}" wx:key="icon-list" wx:for-item="itemsIcon" src='{{domain}}/uc_server/avatar.php?uid={{itemsIcon.uid}}&size=small'></image>
+        <image class="touxiang" wx:for="{{comment_list}}" wx:key="icon-list" wx:for-item="itemsIcon" wx:for-index="_index" wx:if="{{index==_index}}" src='{{domain}}/uc_server/avatar.php?uid={{itemsIcon.uid}}&size=small'></image>
         <view class="information">
             <view class="name">{{items.username}}<view class="vip-static"><template is="wxParse" data="{{wxParseData:level.nodes}}"/></view></view>
             <text class="time">{{items.ctime_format}}</text>
         </view>
         <text class="speak">{{items.content}}</text>
     </view>
+    <block wx:if="{{comment_list!=''}}">
+        <view class="loading">没有更多数据</view> 
+    </block>
     <view class="fixed">
         <image class="huifu" src="/images/icon-comment.png"></image>
-        <input class="comment-input" adjust-position="true" confirm-type="send" bindconfirm="bindInputSend" placeholder="说点什么吧" />
+        <input class="comment-input" adjust-position="true" confirm-type="send" bindconfirm="bindInputSend" placeholder="说点什么吧" value="{{value}}"/>
         <image class="zan-img" src="/images/icon-zan-bottom-normal.png"></image>
     </view>
 </view>

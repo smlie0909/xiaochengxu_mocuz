@@ -1,3 +1,4 @@
+@import "../template/template.wxss";
 .container{
     position:fixed;
     top:0;
@@ -7,7 +8,7 @@
 }
 .swiper-tab{
     width:100%;
-    height:100rpx;
+    /* height:100rpx; */
     white-space:nowrap;
     border-bottom:1rpx solid #dddddd;
     font-size:30rpx;
@@ -37,89 +38,8 @@
     height:100vh;
 }
 .swiper-box scroll-view{
-    height: 100%;
+     height: 100vh;
 }
-.swiper-box navigator{
-    padding:26rpx 40rpx 0;
-    border-bottom:1rpx solid rgb(230, 230, 230);
-}
-.swiper-box navigator:last-child{
-    border:0;
-    padding-bottom:100rpx;
-}
-.transverse{
-    display: flex;
-    justify-content: space-between;
-    padding:24rpx 0;
-}
-.transverse .especially{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-.transverse .title{
-    width:384rpx;
-    margin:0;
-}
-.transverse .browse{
-    padding:0;
-}
-.transverse .photo image{
-    width:250rpx;
-}
-.default{
-    border:0;
-}
-.topic-title{
-    display: flex;
-    align-items: center;
-}
-.touxiang{
-    width:60rpx;
-    height:60rpx;
-    border-radius: 30rpx;
-}
-.name{
-    display:flex;
-    flex-direction: column;
-    font-size:30rpx;
-    line-height:30rpx;
-    margin-left:20rpx;
-}
-.name .time{
-    color:#999999;
-    font-size:24rpx;
-}
-.title{
-    font-size:32rpx;
-    line-height:44rpx;
-    display:block;
-    margin:10rpx 0;
-}
-.photo{
-    display:flex;
-    align-items:center;
-}
-.photo image{
-    width:217rpx;
-    height:174rpx;
-    border-radius: 10rpx;
-    margin-right:10rpx;
-}
-.photo image:last-child{
-    margin:0;
-}
-.browse{
-    padding:20rpx 0; 
-    color:#999999;
-    font-size:24rpx;
-}
-.browse text{
-    margin-right:20rpx;
-    display:inline-block;
-
-}
-.browse .time{
-    float: left;
-    margin:0;
+.loading {
+    padding-bottom:120rpx;
 }

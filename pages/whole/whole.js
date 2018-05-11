@@ -1,5 +1,5 @@
-const sectionListUrl = require('../../config').sectionList;
-const sectionIconUrl = require('../../config').sectionIcon;
+const app = getApp()
+const util = require('../../utils/util.js');
 Page({
     data: {
         curIndex: 0,
@@ -12,9 +12,16 @@ Page({
     jumpTemplate: function (event) {
         let itemId = event.currentTarget.id;
         let name = event.currentTarget.dataset.title
-        wx.navigateTo({
-            url: '/pages/blockList/blockList?id=' + itemId + '&&title=' + name,
-        })
+        if (this.options.post == "community"){
+            wx.navigateTo({
+                url: '/pages/post/post?id=' + itemId + '&&post=community',
+            })
+        }else{
+            wx.navigateTo({
+                url: '/pages/blockList/blockList?id=' + itemId + '&&title=' + name,
+            })
+        }
+        
     },
     jumpTo: function (e) {
         // 点击标题切换当前页时改变样式
@@ -24,21 +31,16 @@ Page({
             curIndex: index,
             loading: true,
         })
-        wx.request({
-            url: sectionIconUrl, //仅为示例，并非真实的接口地址
-            header: {
-                'content-type': 'application/json'
-            },
-            success: function (res) {
-                let temp = res.data.catlist[index];
-                that.setData({
-                    childArray: temp,
-                })
-            }
-        })
-
+        util.api_call("index", null, res => {
+            let temp = res.catlist[index];
+            that.setData({
+                childArray: temp,
+            })
+        }, null, () => {
+            wx.hideNavigationBarLoading();
+        });
     },
-    onLoad: function () {
+    onLoad: function (options) {
         let that = this;
         wx.showToast({
             title: '数据加载中',
@@ -46,19 +48,19 @@ Page({
             duration: 1000,
             mask: true
         });
-        wx.request({
-            url: sectionIconUrl, //仅为示例，并非真实的接口地址
-            header: {
-                'content-type': 'application/json'
-            },
-            success: function (res) {
-                console.log(res.data)
-                let temp = res.data.catlist[0];
-                that.setData({
-                    sectionIconData: res.data.catlist,
-                    childArray: temp,
-                })
-            }
+        this.requestsectionIconDate();
+    },
+    //版块列表加载
+    requestsectionIconDate: function () {
+        let that = this;
+        util.api_call("index", null, res => {
+            let temp = res.catlist[0]
+            that.setData({
+                sectionIconData: res.catlist,
+                childArray: temp,
+            })
+        }, null, () => {
+            wx.hideNavigationBarLoading();
         })
     },
     onFollow:function(e){

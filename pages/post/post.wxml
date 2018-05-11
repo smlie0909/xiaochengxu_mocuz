@@ -1,9 +1,13 @@
+<import src="../template/template.wxml" />
 <view class="container">
-    <view class="title">
-        <input type="text" placeholder-style="color:#999999;font-size:32rpx;font-family: 'Noto Sans Regular';" placeholder="#点击添加标题#" maxlength="22" focus="{{focus}}" />
+    <view class="title" wx:if='{{pagetype=="community"}}'>
+        <input type="text" placeholder-style="color:#999999;font-size:32rpx;font-family: 'Noto Sans Regular';" placeholder="#点击添加标题#" maxlength="22" focus="{{focus}}" bindblur="title" bindinput="title"/>
     </view>
+    <view class="title" wx:elif='{{pagetype=="local"}}'>
+        
+    </view> 
     <view class="section">
-        <textarea bindblur="bindTextAreaBlur" placeholder-style="width:630rpx;color:#999999;font-size:32rpx;font-family: 'Noto Sans Regular';" maxlength="400" auto-height placeholder="说点什么吧..." />
+        <textarea bindblur="bindTextAreaBlur" placeholder-style="width:630rpx;color:#999999;font-size:32rpx;font-family: 'Noto Sans Regular';" maxlength="400" auto-height placeholder="说点什么吧..." bindblur="content" bindinput="content"/>
     </view>
     <view class="upImg">
         <view class="upImg-list" catchtap="deleteImg" wx:for="{{pics}}" wx:key="item">
@@ -14,5 +18,6 @@
             <image class="bg-img" src="/images/icon-tupian.png"></image>
         </view>
     </view>
-    <button class="release">发布</button>
+    <button class="release" bindtap='release'>发布</button>
 </view>
+<template is="toast" data="{{txt,isShow,iconClass}}"></template>

@@ -25,15 +25,14 @@ App({
         })
         // 获取用户信息
         wx.getSetting({
-            success: res => {
-                // console.log(res.authSetting['scope.userInfo'])
+            success: res =>{
                 if (res.authSetting['scope.userInfo']) {
                 // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
                     wx.getUserInfo({
                         success: res => {
                             // 可以将 res 发送给后台解码出 unionId
                             this.globalData.userInfo = res.userInfo
-
+                            console.log(this.userInfoReadyCallback)
                             // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
                             // 所以此处加入 callback 以防止这种情况
                             if (this.userInfoReadyCallback) {
@@ -64,15 +63,15 @@ App({
         wx.getStorage({
             key: 'KeyAppUser',
             success: function (res) {
-                console.log("KeyAppUser" + res)
+                // console.log("KeyAppUser" + res)
                 that.globalData.userInfo = res.data
-                that.globalData.userId = res.data.userVO.userId
+                that.globalData.userId = res.data.uid
             }
         })
         wx.getStorage({
             key: 'KeyAppUserToken',
             success: function (res) {
-                // console.log("KeyAppUserToken" + res.data)
+                console.log("KeyAppUserToken" + res.data)
                 that.globalData.token = res.data
             }
         })
@@ -114,7 +113,7 @@ App({
             that.setData({
                 getCodeButtonTitle: "倒计时" + second,
                 buttonState: 0,
-            })
+            });
         }
         let timer = setTimeout(function () {
             that.setData({

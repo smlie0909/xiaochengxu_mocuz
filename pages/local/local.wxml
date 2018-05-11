@@ -49,7 +49,7 @@
                 </view>
             </view>
         </view>
-        <view class="user-publish" wx:for="{{hotData}}" wx:key="post-info" wx:for-index="index" id="{{item.id}}" catchtap='jumpDetails'>
+        <view class="user-publish" wx:for="{{hotData}}" wx:key="post-info" wx:for-index="index" id="{{item.id}}" catchtap='jumpDetails' data-details='local'>
             <image class="touxiang" src='{{item.avatar}}'></image>
             <view class="information">
                 <text class="name" wx:if="{{!item.usergroup_level.level==0}}">{{item.author}}<text class="{{item.usergroup_level.gender==1?'boy':(item.usergroup_level.gender==2?'girl':'vip-static')}}">V{{item.usergroup_level.level}}</text></text>
@@ -63,13 +63,13 @@
                 <image wx:for="{{item.sortlist}}" wx:key="post-list" wx:for-item="itemsImg" src='{{itemsImg.thumb}}'></image>
             </view>
             <view class="comment-icon">
-                <image src='/images/icon-like-normal.png' catchtap="like"></image>
+                <image src="{{item.praid==0 ?'/images/icon-like-normal.png':'/images/icon-like-pressed.png'}}" catchtap="like" data-id='{{item.id}}' data-uid="{{item.authorid}}" data-index="{{index}}"></image>
                 <text>{{item.likecount}}</text>
-                <image src='/images/icon-comment.png' catchtap="comment"></image>
+                <image src='/images/icon-comment.png'></image>
                 <text>{{item.replylist.length}}</text>
             </view>
             <view class="interaction">
-                <view class='user-img'>
+                <view class='user-img' wx:if="{{item.likecount != 0}}">
                     <view class="img-box">
                         <image wx:for="{{item.praiselist}}" wx:key="icon-list" wx:for-item="itemsIcon" src='{{domain}}/uc_server/avatar.php?uid={{itemsIcon}}&size=small'></image>
                     </view>
@@ -92,6 +92,6 @@
         <view class="loading" wx:else>没有更多数据</view> 
     </scroll-view>
 </view>
-<navigator class="fatie-fixed" url="../post/post">
+<view class="fatie-fixed" catchtap='jumpPost' data-post='local'>
     <image src="/images/icon-fatie.png"></image>
-</navigator>
+</view>

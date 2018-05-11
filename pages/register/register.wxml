@@ -3,7 +3,7 @@
 <view class="container">
     <view class="verification">
         <image src="../../images/icon-yonghuming.png"></image>
-        <input class="name" type="text" placeholder='请输入昵称' placeholder-style='color:#cccccc;'></input>
+        <input class="name" type="text" placeholder='请输入昵称' placeholder-style='color:#cccccc;'bindblur="userName" bindinput="userName"></input>
     </view> 
     <view class="verification">
         <image src="../../images/icon-shouji.png"></image>
@@ -15,7 +15,7 @@
     </view>
     <view class="verification">
         <image src="../../images/icon-mima.png"></image>
-        <input class="password" type="password" maxlength='16' placeholder='请输入密码' placeholder-style='color:#cccccc;' bindblur="phoneNumber" bindinput="phoneNumber" ></input>
+        <input class="password" type="password" maxlength='16' placeholder='请输入密码' placeholder-style='color:#cccccc;' bindblur="password" bindinput="password" ></input>
     </view>
     <button class='commitbutton' bindtap='registerNewUser'  style='background-color:#1ec3c5;' type='primary'>提交</button>
 </view>

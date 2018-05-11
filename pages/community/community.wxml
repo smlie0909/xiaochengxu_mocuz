@@ -2,13 +2,13 @@
 <view class="container">
     <scroll-view scroll-y="true" style="height: 100vh;" bindscrolltolower="lower">
         <!-- 版块列表 -->
-        <view class="section">
-            <navigator class="section-list" url='../template/template' wx:for="{{IconData}}" wx:for-index="id" wx:for-item="items" wx:key="IconId">
+        <view class="section" bindtap=''>
+            <view class="section-list" catchtap="jumpTemplate" wx:for="{{IconData}}" wx:for-index="index" wx:for-item="items" wx:key="IconId" data-title="{{items.name}}" id="{{items.fid}}">
                 <view class="section-box">
                     <image src="{{items.forumlist[0].icon}}"></image>
                 </view>
                 <text>{{items.name}}</text>
-            </navigator>
+            </view>
         </view>
         <!-- 全部板块 -->
         <navigator url='../whole/whole' class="sectionAll">
@@ -54,6 +54,6 @@
         </view>
     </scroll-view>
 </view>
-<navigator class="fatie-fixed" url="../post/post">
+<view class="fatie-fixed" catchtap='jumpPost' data-post='community'>
     <image src="/images/icon-fatie.png"></image>
-</navigator>
+</view>

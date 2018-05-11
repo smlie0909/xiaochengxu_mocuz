@@ -1,8 +1,6 @@
 // pages/register/register.js
-const DES3 = require('../../utils/DES3.min').des
-const codeUrl = require('../../config').identifyingCode
-const registerUrl = require('../../config').register
-const app = getApp()
+const app = getApp();
+const util = require('../../utils/util.js');
 Page({
 
     /* 页面的初始数据 */
@@ -10,52 +8,46 @@ Page({
         getCodeButtonTitle: "获取验证码",
         second: 60,
         buttonState: 1, /* 0不可点击  1可点击*/
+        userName: 0, //用户昵称
         phoneNum: 0,       //手机号
+        password: 0, //密码
         verCode: 0,//验证码
     },
     /* 注册 */
     registerNewUser: function () {
         let that = this;
-        if (that.data.verCode.length > 4 && that.data.phoneNum.length == 11 && 5 < this.data.password.length < 19 && that.validatemobile()) {
+        if (that.data.verCode.length > 4 && that.data.phoneNum.length == 11 && 5 < this.data.password.length < 16 && that.validatemobile()) {
             wx.showNavigationBarLoading();
-            var dict = {
-                auth: app.globalData.userInfo.nickName,
-                // password: md5.md5(that.data.password),
-                regtype:"m",
-                mobile: that.data.verCode,
-                origin: '3',
-            }
-            wx.request({
-                url: registerUrl,
-                params: dict,
-                success: function (res) {
-                    // console.log(res.data);
+            let dir = '{"auth":"","regtype":"m","username":"' + that.data.userName + '","password":"' + that.data.password + '","mobile":"' + that.data.phoneNum + '","code":"' + that.data.verCode +'"}';
+            util.api_call("register", dir, res => {
+                console.log(res);
+                if (res.errcode == 0) {
                     wx.hideNavigationBarLoading();
                     wx.showToast({
                         title: "注册成功",
+                        icon: 'success',
                         duration: 2000
-                    })
-                    setTimeout(function () {
-                        wx.navigateBack({
-                            url:"/pages/login/login"
-                        })
-                    }, 2000);
-
-                    //跳转到个人中心
-
-                },
-                fail: function (res) {
-                    //失败后的逻辑
+                    });
+                    wx.navigateBack({
+                        url: "/pages/login/login"
+                    });
+                } else {
                     wx.hideNavigationBarLoading();
-                    wx.showToast({
-                        title: res.data.msg,
-                    })
-                },
+                    app.toastShow(that, res.errmsg, "icon-yanzhengma");
+                }
+            }, res => {
+                //失败后的逻辑
+                wx.hideNavigationBarLoading();
+                wx.showToast({
+                    title: res.msg,
+                })
+            }, res => {
+                wx.hideNavigationBarLoading()
+                app.toastShow(that, "请完整填写信息", "icon-yunongtongqingshurushoujihaoma")
             })
         } else {
-            wx.showToast({
-                title: '请填写完整信息',
-            })
+            wx.hideNavigationBarLoading()
+            app.toastShow(that, "请完整填写信息", "icon-xinxitianxie");
         }
     },
     /* 获取验证码 */
@@ -64,46 +56,56 @@ Page({
         if (that.data.buttonState == 1 && that.data.phoneNum.length == 11 && that.validatemobile()) {
             wx.showNavigationBarLoading();
             let dir = '{"send_key":"mocuz_app_mobile_send","action":"verifycode","auth":"","mobile":"' + that.data.phoneNum + '","access_token":""}';
-            let des3en = DES3.encrypt(app.globalData.key, dir);
-            wx.request({
-                url: codeUrl,
-                data: des3en,
-                method: 'POST',
-                success: function (res) {
-                    console.log(res.data);
-                    if (res.data.errmsg == "success"){
-                        wx.hideNavigationBarLoading()
-                        app.countdown(that);
-                    }else{
-                        wx.hideNavigationBarLoading()
-                        app.toastShow(that, res.data.errmsg, "icon-yunongtongqingshurushoujihaoma");
-                    }
-                },
-                fail: function (res) {
+            util.api_call("verifycode", dir, res => {
+                console.log(res)
+                if (res.errmsg == "success") {
                     wx.hideNavigationBarLoading()
-                    app.toastShow(that,res.data.errmsg, "icon-yunongtongqingshurushoujihaoma");
-                    // console.log("error")
-                },
-            })
+                    app.countdown(that);
+                } else {
+                    wx.hideNavigationBarLoading()
+                    app.toastShow(that, res.errmsg, "icon-yanzhengma");
+                }
+            }, res => {
+                //失败后的逻辑
+                wx.hideNavigationBarLoading()
+                app.toastShow(that, res.errmsg, "icon-yanzhengma");
+            }, null)
+        } else if (that.data.phoneNum.length == undefined) {
+            wx.hideNavigationBarLoading()
+            app.toastShow(that, "请输入手机号", "icon-yunongtongqingshurushoujihaoma");
         } else {
             if (that.data.buttonState != 0) {
+                console.log(that.data.phoneNum.length)
                 wx.hideNavigationBarLoading()
                 app.toastShow(that, "请校验手机号", "icon-yunongtongqingshurushoujihaoma");
             };
         }
     },
+    //昵称
+    userName: function (e) {
+        this.setData({
+            userName: e.detail.value
+        })
+    },
+    //手机号
     phoneNumber: function (e) {
         this.setData({
             phoneNum: e.detail.value
         })
     },
-
+    //验证码
     verCode: function (e) {
-        let that = this;
-        that.setData({
+        this.setData({
             verCode: e.detail.value
         })
     },
+    //密码
+    password: function (e) {
+        this.setData({
+            password: e.detail.value
+        })
+    },
+    //手机号验证
     validatemobile: function () {
         let that = this;
         let myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;

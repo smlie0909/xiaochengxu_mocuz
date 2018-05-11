@@ -1,28 +1,33 @@
 //获取应用实例  
-const app = getApp()
+const app = getApp();
+const util = require('../../utils/util.js')
 Page({
-    data: {
-        userInfo: {},
-        userHeaderUrl: "../../images/touxiang.jpg",
+    data:{
+        userHeaderUrl: "http://utf8develop.mocuz.com/uc_server/avatar.php?uid=1499&size=middle&random=1525934007",
         userPhone: "注册/登录",
         userName: "MOCUZ",
-        userGrade: "V0",
+        userGrade: "",
+        userLevel: "",
         isLogin: 0,
         id_token: '',//方便存在本地的locakStorage  
-        response: '' //存取返回数据  
+        response: '', //存取返回数据  
+        pageIndex: 1, //页码
     },
-    onLoad: function () {
-        // console.log("去登录");
-        let that = this;
-        that.refreshView();
+    onLoad:function(){
+        this.myData()
     },
-    login:function(){
-        wx.getStorage({
-            key: "LoginSessionKey",
-            success: function (res) {
-                console.log(res.data)
-            }
-        })
+    onShow: function () {
+        this.refreshView();
+    },
+    myData:function(){
+        let that = this
+        let dir = '{"auth":"' + app.globalData.userInfo.auth + '"}';
+        util.api_call("my.my", dir, res => {
+            that.setData({
+                space_threads: res.data.space_threads,
+                topic_posts: res.data.topic_posts
+            })
+        }, null, null)
     },
     //查看个人信息
     showUserInfo: function () {
@@ -36,34 +41,37 @@ Page({
     },
     //退出登录事件
     loginOut: function () {
-        app.removeLocalUserInfo();
-        let that = this;
+        let that = this
+        app.removeLocalUserInfo()
         app.globalData.userInfo = null;
         that.refreshView();
     },
     //刷新当前页面
     refreshView: function () {
         let that = this;
+        console.log(app.globalData.userInfo)
         if (app.globalData.userInfo) {
-            console.log("刷新页面了");
+            // console.log("刷新页面了");
             that.setData({
-                // userHeaderUrl: app.globalData.userInfo.userVO.userUrl,
-                userHeaderUrl: app.globalData.userInfo.avatarUrl,
-                // userPhone: app.globalData.userInfo.userVO.userName,
-                // userName: app.globalData.userInfo.userVO.nickName,
-                userName: app.globalData.userInfo.nickName,
-                isLogin: 1,
-            })
-
+                userHeaderUrl: app.globalData.userInfo.avatar,
+                userName: app.globalData.userInfo.username,
+                userPhone: app.globalData.userInfo.mobile,
+                userGrade: app.globalData.userInfo.gender,
+                userLevel: app.globalData.userInfo.grouptitle,
+                isLogin: 1
+            });
         } else {
-            console.log("刷新页面了2");
+            // console.log("刷新页面了2");
             that.setData({
                 isLogin: 0,
                 userName: "MOCUZ",
                 userPhone: "注册/登录",
                 userGrade:"",
-                userHeaderUrl: "../../images/touxiang.jpg",
+                userLevel:"",
+                userHeaderUrl: "http://utf8develop.mocuz.com/uc_server/avatar.php?uid=1499&size=middle&random=1525934007",
             })
         }
     },
+    // 我的帖子
+    
 })  

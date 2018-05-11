@@ -1,7 +1,7 @@
 <!--pages/template/template.wxml-->
 <!-- 社区tab -->
 <template name="newsListReply">
-    <view class="post" wx:if="{{items.pics.length==1}}" bindtap="jumpDetails" id="{{items.tid}}">
+    <view class="post" wx:if="{{items.pics.length==1}}" bindtap="jumpDetails" data-tid="{{items.tid}}" data-uid="{{items.uid}}" data-details='community' data-gender="{{items.usergroup.gender}}">
         <view class="topic-title">
             <image class="touxiang" src="{{items.avatar}}"></image>
             <view class="name">
@@ -17,14 +17,14 @@
             <view class="especially">
                 <text class="title">{{items.subject}}</text>              
                 <view class="browse">
-                    <text>浏览 {{items.likes}}</text>
+                    <text>阅读 {{items.likes}}</text>
                     <text>评论 {{items.replies}}</text>
                     <text class="time">{{items.time}}</text>
                 </view>
             </view>
         </view>
     </view>
-    <view class="post" wx:else="{{items.pics.length>1}}" bindtap="jumpDetails" id="{{items.tid}}"> 
+    <view class="post" wx:else="{{items.pics.length>1}}" bindtap="jumpDetails" data-tid="{{items.tid}}" data-uid="{{items.uid}}" data-details='community' data-gender="{{items.usergroup.gender}}"> 
         <view class="topic-title">
             <image class="touxiang" src="{{items.avatar}}"></image>
             <text class="name" wx:if="{{!items.usergroup.level==0}}">{{items.author}}<text class="{{items.usergroup.gender==1?'boy':(items.usergroup.gender==2?'girl':'vip-static')}}">V{{items.usergroup.level}}</text></text>
@@ -35,7 +35,7 @@
             <image wx:for="{{items.pics}}" wx:for-item="items" wx:key="itemLsit" src="{{items}}"></image>
         </view>
         <view class="browse">
-            <text>浏览 {{items.likes}}</text>
+            <text>阅读 {{items.likes}}</text>
             <text>评论 {{items.replies}}</text>
             <text class="time">{{items.time}}</text>
         </view>

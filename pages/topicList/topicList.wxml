@@ -15,7 +15,7 @@
             <text>{{involcount}}人参与</text>
         </view>
         <block wx:if="{{topicsData!=''}}">
-            <view class="user-publish" wx:for="{{topicsData}}" wx:key="post-info" wx:for-index="index" id="{{item.id}}" catchtap='jumpDetails'>
+            <view class="user-publish" wx:for="{{topicsData}}" wx:key="post-info" wx:for-index="index" id="{{item.id}}" data-details='local' catchtap='jumpDetails'>
                 <image class="touxiang" src='{{item.avatar}}'></image>
                 <view class="information">
                     <text class="name" wx:if="{{!item.usergroup_level.level==0}}">{{item.author}}<text class="{{item.usergroup_level.gender==1?'boy':(item.usergroup_level.gender==2?'girl':'vip-static')}}">V{{item.usergroup_level.level}}</text></text>
@@ -30,13 +30,13 @@
                     <image wx:for="{{item.sortlist}}" wx:key="post-list" wx:for-item="itemsImg" src='{{itemsImg.thumb}}'></image>
                 </view>
                 <view class="comment-icon">
-                    <image src='/images/icon-like-normal.png' catchtap="like"></image>
+                    <image src="{{item.praid==0 ?'/images/icon-like-normal.png':'/images/icon-like-pressed.png'}}" catchtap="like" data-id='{{item.id}}' data-uid="{{item.authorid}}" data-index="{{index}}"></image>
                     <text>{{item.praiselist.length}}</text>
                     <image src='/images/icon-comment.png' catchtap="comment"></image>
                     <text>{{item.replylist.length}}</text>
                 </view>
                 <view class="interaction">
-                    <view class='user-img'>
+                    <view class='user-img' wx:if="{{item.praiselist.length != 0}}">
                         <view class="img-box">
                             <image wx:for="{{item.praiselist}}" wx:key="icon-list" wx:for-item="itemsIcon" src='{{domain}}/uc_server/avatar.php?uid={{itemsIcon}}&size=small'></image>
                         </view>

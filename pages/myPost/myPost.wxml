@@ -1,20 +1,19 @@
 <view class="container">
-    <view class="post-content">
+    <view class="post-content" wx:for="{{myPostList}}" wx:key="">
         <view class="user">
-            <image src="/images/touxiang.jpg"></image>
-            <text class="name">飞天小女警</text>
+            <image src="{{item.avatar}}"></image>
+            <text class="name">{{item.author}}</text>
         </view>
         <view class="content">
-            <view class="photo">
-                <image src="/images/touxiang.jpg"></image>
-                <image src="/images/touxiang.jpg"></image>
+            <view class="photo" wx:for="{{item.pics}}" wx:key="" wx:for-item="items">
+                <image src="{{items}}"></image>
             </view>
-            <text>毛主席飞天小女警飞天小女警飞天小女警飞天小女警飞天小女警飞天小女警飞天小女警</text>
+            <text>{{item.subject}}</text>
         </view>
         <view class="time">
-            <text>阅读 0</text>
-            <text>2018-02-07</text>    
+            <text>阅读 {{item.views}}</text>
+            <text>{{item.create_time}}</text>    
         </view>
     </view>
-    <view class="prompt">无法加载更多了~</view>
+    <view class="prompt" wx:if="{{myPostList!=''}}">无法加载更多了~</view>
 </view>

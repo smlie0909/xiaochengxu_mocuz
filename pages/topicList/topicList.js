@@ -1,6 +1,5 @@
-const DES3 = require('../../utils/DES3.min').des;
-const topicUrl = require('../../config').topicDetails;
-const app = getApp();
+const app = getApp()
+const util = require('../../utils/util.js')
 Page({
     data: {
         domain: app.globalData.domain,//域名
@@ -22,13 +21,19 @@ Page({
         this.setData({
             pageIndex: 1, //每次进入页面将pageIndex设置为1，覆盖之前的值
         })
-        this.requestTopiclistDate();
+        if (!app.globalData.userInfo) {
+            app.globalData.userInfo = "";
+            this.requestTopiclistDate()
+        } else {
+            this.requestTopiclistDate()
+        }
     },
     //帖子详情
     jumpDetails: function (event) {
         let itemId = event.currentTarget.id;
+        let itemName = event.currentTarget.dataset.details;
         wx.navigateTo({
-            url: '/pages/details/details?id=' + itemId
+            url: '/pages/details/details?id=' + itemId + '&details=' + itemName
         })
     },
     //加载更多
@@ -42,33 +47,61 @@ Page({
     // 帖子详情
     requestTopiclistDate:function(){
         let that = this;
-        let dir = '{"auth":"","page":"' + that.data.pageIndex+'","tname":"' + that.options.title + '","tid":"' + that.options.id +'"}';
-        let des3en = DES3.encrypt(app.globalData.key, dir);
-        wx.request({
-            url: topicUrl,
-            method: 'POST',
-            data: des3en,
-            header: {
-                'content-type': 'application/json'
-            },
-            success: function (res) {
-                // console.log(res.data)
+        let dir = '{"auth":"' + app.globalData.userInfo.auth + '","page":"' + that.data.pageIndex+'","tname":"' + that.options.title + '","tid":"' + that.options.id +'"}';
+        util.api_massage("topic/get_topic_detail", dir, res => {
+            // console.log(res)
+            that.setData({
+                detailimg: res.detailimg,
+                title: res.title,
+                involcount: res.involcount,
+                piccount: res.piccount,
+                part_ava: res.part_avatars,
+                topicsData: that.data.topicsData.concat(res.post_info),
+                totalpage: res.posts_totalpage,
+            });
+            if (that.data.pageIndex == that.data.totalpage) { //当pageIndex小于page页数时加载数据 
                 that.setData({
-                    detailimg: res.data.detailimg,
-                    title: res.data.title,
-                    involcount: res.data.involcount,
-                    piccount: res.data.piccount,
-                    part_ava: res.data.part_avatars,
-                    topicsData: that.data.topicsData.concat(res.data.post_info),
-                    totalpage: res.data.posts_totalpage,
-                });
-                // console.log(that.data.pageIndex, that.data.totalpage)
-                if (that.data.pageIndex == that.data.totalpage) { //当pageIndex小于page页数时加载数据 
-                    that.setData({
-                        hasMore: false, //无数据时提示没有更多数据
-                    });
-                }
+                    hasMore: false, //无数据时提示没有更多数据
+                })
             }
+        }, res => {
+            wx.hideNavigationBarLoading();
+        }, () => {
+            wx.hideNavigationBarLoading();
         })
-    }
+    },
+    // 点赞
+    like: function (e) {
+        console.log(e)
+        let that = this;
+        if (app.globalData.userInfo.auth) {
+            let dir = '{"auth":"' + app.globalData.userInfo.auth + '","postid":"' + e.currentTarget.dataset.id + '","to_uid":"' + e.currentTarget.dataset.uid + '"}';
+            let des3en = DES3.encrypt(app.globalData.key, dir);
+            wx.request({
+                url: localpraiseUrl,
+                method: 'POST',
+                data: des3en,
+                header: {
+                    'content-type': 'application/json'
+                },
+                success: function (res) {
+                    console.log(res)
+                    // that.requestHotlistDate()
+                    // if (res.data.errcode == 0) {
+                    //     wx.showToast({
+                    //         title: "",
+                    //     })
+                    // } else {
+                    //     wx.showToast({
+                    //         title: res.data.errmsg,
+                    //     })
+                    // }
+                }
+            })
+        } else {
+            wx.navigateTo({
+                url: '../login/login',
+            })
+        }
+    },
 });

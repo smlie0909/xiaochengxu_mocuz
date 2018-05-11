@@ -1,61 +1,55 @@
-const DES3 = require('../../utils/DES3.min').des;
-const topicUrl = require('../../config').topicList;
-const app = getApp();
+const app = getApp()
+const util = require('../../utils/util.js')
 Page({
-    data: {
-        pageIndex: 1, //页码
-        winHeight: "",//窗口高度
+    data:{
         currentTab: 0, //预设当前项的值
-        scrollLeft: 0, //tab标题的滚动条位置
-        expertList: [{ //假数据
-            img: "avatar.png",
-            name: "欢顔",
-            tag: "知名情感博主",
-            answer: 134,
-            listen: 2234
-        }]
+        top:{},
+        threadtypes:{},
+        allList:[],
+        pageIndex: 1,    //页码
+        totalpage: "", //总页数 
+        hasMore: true,  //"上拉加载"的变量，默认true，显示; “没有数据”的变量，false，隐藏
     },
     onLoad: function (option) {
         wx.setNavigationBarTitle({
             title: option.title//页面标题为路由参数
-        })
-        let that = this;
-        //  高度自适应
-        // wx.getSystemInfo({
-        //     success: function (res) {
-        //         var clientHeight = res.windowHeight,
-        //             clientWidth = res.windowWidth,
-        //             rpxR = 750 / clientWidth;
-        //         var calc = clientHeight * rpxR - 180;
-        //         that.setData({
-        //             winHeight: calc
-        //         });
-        //     }
-        // });
+        });
         this.requestTopiclistDate()
     },
-    // 加载热门话题数据
+    //加载更多
+    lower: function () {
+        this.setData({
+            pageIndex: this.data.pageIndex + 1, //每次下拉到底部触发 pageIndex+1
+        })
+        this.requestTopiclistDate();
+    },
+    jumpDetails: function (event) {
+        console.log(event)
+        let tid = event.currentTarget.dataset.tid
+        let uid = event.currentTarget.dataset.uid
+        let itemName = event.currentTarget.dataset.details
+        let gender = event.currentTarget.dataset.gender
+        wx.navigateTo({
+            url: '/pages/details/details?tid=' + tid + '&uid=' + uid + '&details=' + itemName + '&gender=' + gender
+        })
+    },
+    // 加载版块帖子列表数据
     requestTopiclistDate: function () {
         let that = this;
-        let dir = '{"auth":"","op":"index","page":"' + that.data.pageIndex +'"}';
-        let des3en = DES3.encrypt(app.globalData.key, dir);
-        wx.request({
-            url: topicUrl,
-            method: 'POST',
-            data: des3en,
-            header: {
-                'content-type': 'application/json'
-            },
-            success: function (res) {
-                console.log(res.data)
-                // that.setData({
-                //     rankingData: res.data.hot_post,
-                //     hotData: that.data.hotData.concat(res.data.posts),
-                //     totalpage: res.data.posts_totalpage,
-                // })
+        let dir = '{"auth":"' + app.globalData.userInfo.auth +'","fid":"'+that.options.id+'","page":"' + that.data.pageIndex +'"}';
+        util.api_call("forumdisplay", dir, res => {
+            that.setData({
+                top: res.top,
+                threadtypes: res.threadtypes,
+                allList: that.data.allList.concat(res.list),
+                totalpage: res.total,
+            })
+            if (that.data.pageIndex == res.total || res.total == 0) {
+                that.setData({
+                    hasMore: false, //无数据时提示没有更多数据
+                });
             }
-        })
-        
+        }, null, null);
     },
     // 滚动切换标签样式
     switchTab: function (e) {
@@ -66,12 +60,11 @@ Page({
     },
     // 点击标题切换当前页时改变样式
     swichNav: function (e) {
-        var cur = e.target.dataset.current;
-        // console.log(cur)
+        let cur = e.target.dataset.current
         if (this.data.currentTaB == cur) { return false; }
         else {
             this.setData({
-                currentTab: cur
+                currentTab: cur,
             })
         }
     },

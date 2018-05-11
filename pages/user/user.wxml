@@ -3,7 +3,7 @@
         <view class="user-info">
             <image class="touxiang" src="{{userHeaderUrl}}" catchtap='showUserInfo'></image>
             <view class="info" catchtap='showUserInfo'>
-                <text class="name">{{userName}}<text class="vip-static">{{userGrade}}</text></text>
+                <text class="name">{{userName}}<text class="{{userGrade==1?'boy':(userGrade==2?'girl':'vip-static')}}">{{userLevel}}</text></text>
                 <text class="user-id">{{userPhone}}</text>
             </view>
         </view>
@@ -11,12 +11,12 @@
     </view>
     <view class="dynamic">
         <navigator url="../myPost/myPost">
-            <text class="number">0</text>
+            <text class="number">{{space_threads==0?0:space_threads}}</text>
             <text class="theme">我的帖子</text>
         </navigator>
         <text class="border"></text>
         <navigator>
-            <text class="number">0</text>
+            <text class="number">{{topic_posts==0?0:topic_posts}}</text>
             <text class="theme">我的朋友圈</text>
         </navigator>
     </view>
